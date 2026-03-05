@@ -1,18 +1,19 @@
 services:
   app:
     build: .
+    container_name: todo-app
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/todoapp
-      - JWT_SECRET=your_jwt_secret_here
-      - NODE_ENV=development
-      - PORT=5003
+      - DATABASE_URL=${DATABASE_URL}     # ← Reads from .env
+      - JWT_SECRET=${JWT_SECRET}         # ← Reads from .env
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-5003}
     ports:
       - "5003:5003"
     depends_on:
       - db
     volumes:
       - .:/app
-      - /app/node_modules # <--- The "Shield": Protects the container's modules from Windows
+      - /app/node_modules
 
   db:
     image: postgres:13-alpine
