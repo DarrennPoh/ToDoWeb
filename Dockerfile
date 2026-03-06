@@ -20,4 +20,4 @@ RUN npx prisma generate
 EXPOSE 5001 
 
 ### define the command that runs the application 
-CMD ["node","./src/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node ./src/server.js"]

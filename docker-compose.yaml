@@ -3,7 +3,7 @@ services:
     build: .
     container_name: todo-app
     environment:
-      - DATABASE_URL=${DATABASE_URL}     
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/todoapp     
       - JWT_SECRET=${JWT_SECRET}         
       - NODE_ENV=${NODE_ENV:-development}
       - PORT=${PORT:-5003}
