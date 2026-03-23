@@ -167,8 +167,7 @@ This project is licensed under the MIT License.
 Darren Poh
 
 GitHub: @DarrennPoh
-LinkedIn: Darren Poh
-Email: [Your email here]
+LinkedIn:https://www.linkedin.com/in/darren-poh-aa8b1a26b/
 
 🙏 Acknowledgments
 
@@ -178,5 +177,3 @@ Express - Web framework
 Docker - Containerization platform
 
 
-⭐ If you found this project helpful, please give it a star!
-Built with ❤️ using Docker, Express, Prisma, and PostgreSQL
