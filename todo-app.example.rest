@@ -1,0 +1,95 @@
+# =====================================================
+# TodoWeb API Test File
+# =====================================================
+# HOW TO USE THIS FILE:
+# 1. Install the "REST Client" extension in VS Code
+#    (Extension ID: humao.rest-client)
+# 2. Start the server: docker-compose up --build
+# 3. Run requests top to bottom — start with Register or Login
+# 4. The token from Login is captured AUTOMATICALLY.
+#    No copy-pasting needed!
+# =====================================================
+
+
+### [1] Health Check - confirm server is running
+GET http://localhost:5003
+
+
+### [2] REGISTER a new user
+# Run this once to create your account.
+# If the user already exists, skip to Login.
+POST http://localhost:5003/auth/register
+Content-Type: application/json
+
+{
+  "username": "your_email@example.com",
+  "password": "your_password"
+}
+
+
+### [3] LOGIN - run this to get your auth token
+# @name login
+# The token is automatically captured from this response.
+# All protected requests below use it via {{login.response.body.token}}
+# No copy-pasting needed!
+POST http://localhost:5003/auth/login
+Content-Type: application/json
+
+{
+  "username": "your_email@example.com",
+  "password": "your_password"
+}
+
+
+### [4] FETCH all todos (protected route)
+# Token is automatically taken from the login response above
+GET http://localhost:5003/todos
+Authorization: {{login.response.body.token}}
+
+
+### [5] CREATE an IoT todo - Raspberry Pi sensor
+POST http://localhost:5003/todos
+Authorization: {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "task": "Check temperature sensor readings from Raspberry Pi"
+}
+
+
+### [6] CREATE an IoT todo - MQTT broker
+POST http://localhost:5003/todos
+Authorization: {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "task": "Configure MQTT broker for smart home devices"
+}
+
+
+### [7] CREATE an IoT todo - soil moisture alert
+POST http://localhost:5003/todos
+Authorization: {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "task": "Set up alert when soil moisture sensor drops below 30%"
+}
+
+
+### [8] UPDATE a todo - mark as completed
+# Replace the id in the URL with an actual todo id from your fetch response
+PUT http://localhost:5003/todos/1
+Authorization: {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "completed": true
+}
+
+
+### [9] DELETE a todo - hard delete
+# Replace the id in the URL with an actual todo id from your fetch response
+# Note: Hard deletes are permanent. Consider soft delete (deletedAt field) in production.
+DELETE http://localhost:5003/todos/1
+Authorization: {{login.response.body.token}}
