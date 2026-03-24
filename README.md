@@ -150,17 +150,6 @@ Express Middleware - Request processing pipeline
 Async JavaScript - Promises and async/await patterns
 State Management - Client-side state without frameworks
 
-🔮 Future Improvements
-
- Add comprehensive tests (Jest, Supertest)
- Implement refresh tokens
- Add todo categories/tags
- Add due dates and reminders
- Implement todo sharing
- Deploy to cloud (Railway, Render)
-
-🤝 Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
 📄 License
 This project is licensed under the MIT License.
 👤 Author
