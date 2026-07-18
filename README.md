@@ -155,18 +155,19 @@ Visit [http://localhost:5003](http://localhost:5003) in your browser.
 
 ## 🧪 Testing the API
 
-A `todo-app.rest` file is included so you can test all API endpoints directly inside VS Code — no Postman needed.
+A `todoweb.example.rest` file is included so you can test all API endpoints directly inside VS Code — no Postman needed.
 
 ### Step 1 — Install the REST Client extension
+...(unchanged)
 
-In VS Code, install the **REST Client** extension:
-- Open Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`)
-- Search for **REST Client**
-- Install the one by **Huachao Mao** (Extension ID: `humao.rest-client`)
+### Step 2 — Copy and open the test file
 
-### Step 2 — Open the test file
+Copy the example file so you have your own working copy:
+\```bash
+cp todoweb.example.rest todoweb.rest
+\```
 
-Open `todo-app.rest` in VS Code. You will see each request has a **"Send Request"** button appear above it when you hover.
+Open `todoweb.rest` in VS Code. You will see each request has a **"Send Request"** button appear above it when you hover.
 
 ### Step 3 — Run requests in order
 
@@ -216,7 +217,7 @@ todoweb/
 │   ├── index.html
 │   ├── styles.css
 │   └── fanta.css
-├── todo-app.rest               # API test file for VS Code REST Client
+├── todoweb.example.rest               # API test file for VS Code REST Client
 ├── .env.example                # Environment variable template
 ├── .gitignore                  # Files excluded from Git
 ├── Dockerfile                  # Node.js app container config
