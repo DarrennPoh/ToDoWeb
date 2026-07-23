@@ -17,13 +17,23 @@ const __dirname = dirname(__filename)
 app.use(express.json()) 
 app.use(express.static(path.join(__dirname, '../public')))
 
-// 4. Routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
-})
 
 app.use('/auth', authRoutes)
 app.use('/todos', authMiddleware, todoRoutes)
+
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' })
+})
+
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not found' })
+})
+
+app.use((err, req, res, next) => {
+    console.error(err)
+    res.status(500).json({ error: 'Internal server error' })
+})
 
 app.listen(PORT, () => {
     console.log(`Server has started on port: ${PORT}`)

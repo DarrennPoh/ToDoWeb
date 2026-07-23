@@ -1,3 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    --background-primary: #FBEFE4;
+    --background-muted: #FFFBF6;
+
+    --color-primary: #4A3B34;
+    --color-link: #C98A3D;
+    --color-link-transparent: rgba(201, 138, 61, 0.14);
+
+    --color-success: #6E8C68;
+    --color-error: #C46D6D;
+    --color-highlight: #F3DCC0;
+
+    --gradient-start: #E3A857;
+    --gradient-end: #D98B8B;
+
+    --border-primary: #EFDFCB;
+    --border-secondary: #E9D2B0;
+    --border-highlight: #C98A3D;
+
+    --border-radius-small: 0.7rem;
+    --border-radius-large: 1.2rem;
+    --highlight-border-radius: 0.6rem;
+}
+
+body,
+p,
+input,
+h1, h2, h3, h4, h5, h6, button {
+    font-family: 'Nunito', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, button {
+    font-family: 'Fredoka', sans-serif;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -30,6 +67,13 @@ body,
 
 .sign-up-text {
     padding-top: 0;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 .register-content {
@@ -85,21 +129,17 @@ hr {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    border: none;
+    background: var(--background-muted);
+    transition: background-color 200ms ease, border-color 200ms ease;
 }
 
 .todo-complete {
-    position: relative;
+    background: rgba(110, 140, 104, 0.22);
+    border-color: var(--color-success);
 }
 
-.todo-complete::after {
-    position: absolute;
-    content: '';
-    z-index: 4;
-    inset: -1.5px;
-    border-radius: inherit;
-    background: var(--background-primary);
-    opacity: 0.6;
+.todo-complete p {
+    color: var(--color-success);
 }
 
 .todo-buttons {
@@ -120,19 +160,14 @@ hr {
 }
 
 .todo-buttons button:first-of-type {
-    /* color: #8aff80;
-    background: rgba(138, 255, 128, .1); */
-    color: var(--background-primary);
-    background: var(--color-link);
+    color: var(--color-success);
+    background: rgba(110, 140, 104, 0.14);
 }
 
 .todo-buttons button:last-of-type {
-    /* color: #9580ff;
-    background: rgba(149, 128, 255, .1); */
-    color: var(--color-link);
-    background: var(--color-link-transparent);
+    color: var(--color-error);
+    background: rgba(196, 109, 109, 0.14);
 }
-
 
 .todo-item p {
     font-weight: 500;

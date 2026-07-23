@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App | Node.JS Express.JS SQLite</title>
-    <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="/fanta.css" />
+    <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -51,9 +51,6 @@
     <main style="display: none;"></main>
 
     <script>
-        // Log to confirm script is loading
-        console.log('✅ Script started loading');
-
         // State variables
         let token = localStorage.getItem('token');
         let isLoading = false;
@@ -76,12 +73,8 @@
         const authBtn = document.getElementById('authBtn');
         const logoutBtn = document.getElementById('logoutBtn');
 
-        console.log('✅ DOM elements loaded');
-        console.log('Token exists:', !!token);
-
         // PAGE RENDERING LOGIC
         async function showDashboard() {
-            console.log('📱 Showing dashboard');
             nav.style.display = 'block';
             header.style.display = 'flex';
             main.style.display = 'flex';
@@ -109,7 +102,6 @@
         }
 
         function changeTab(tab) {
-            console.log('Changing tab to:', tab);
             selectedTab = tab;
             navElements.forEach(val => {
                 if (val.getAttribute('data-tab') === tab) {
@@ -128,11 +120,11 @@
             let todoList = '';
             todos.filter(val => {
                 return selectedTab === 'All' ? true : 
-                       selectedTab === 'Complete' ? val.completed : !val.completed;
+                    selectedTab === 'Complete' ? val.completed : !val.completed;
             }).forEach((todo) => {
                 const taskIndex = todo.id;
                 todoList += `
-                <div class="card todo-item">
+                <div class="card todo-item ${todo.completed ? 'todo-complete' : ''}">
                     <p>${todo.task}</p>
                     <div class="todo-buttons">
                         <button onclick="updateTodo(${taskIndex})" ${todo.completed ? 'disabled' : ''}>
@@ -158,7 +150,6 @@
 
         // AUTH LOGIC
         function toggleIsRegister() {
-            console.log('🔄 Toggling registration mode');
             isRegistration = !isRegistration;
             registerBtn.innerText = isRegistration ? 'Sign in' : 'Sign up';
             document.querySelector('#auth > div h2').innerText = isRegistration ? 'Sign Up' : 'Login';
@@ -167,17 +158,10 @@
         }
 
         async function authenticate() {
-            console.log('🔐 Authenticate called');
-            
             const emailVal = email.value.trim();
             const passVal = password.value;
 
-            console.log('Email:', emailVal);
-            console.log('Password length:', passVal.length);
-
-            // Validation
             if (isLoading || isAuthenticating) {
-                console.log('⏳ Already processing');
                 return;
             }
 
@@ -204,11 +188,8 @@
             authBtn.innerText = 'Authenticating...';
             authBtn.disabled = true;
 
-            console.log('📡 Sending request...');
-
             try {
                 const endpoint = isRegistration ? 'auth/register' : 'auth/login';
-                console.log('Endpoint:', apiBase + endpoint);
 
                 const response = await fetch(apiBase + endpoint, {
                     method: 'POST',
@@ -216,23 +197,19 @@
                     body: JSON.stringify({ username: emailVal, password: passVal })
                 });
 
-                console.log('Response status:', response.status);
                 const data = await response.json();
-                console.log('Response data:', data);
 
                 if (data.token) {
-                    console.log('✅ Authentication successful!');
                     token = data.token;
                     localStorage.setItem('token', token);
                     authBtn.innerText = 'Loading...';
-                    await fetchTodos();
-                    showDashboard();
+                    await showDashboard();
                 } else {
-                    throw new Error(data.error || 'Failed to authenticate');
+                    throw new Error(data.message || 'Failed to authenticate');
                 }
 
             } catch (err) {
-                console.error('❌ Error:', err);
+                console.error('❌ Auth error:', err);
                 error.innerText = err.message;
                 error.style.display = 'block';
             } finally {
@@ -243,48 +220,40 @@
         }
 
         function logout() {
-            console.log('👋 Logging out');
             localStorage.removeItem('token');
             token = null;
             todos = [];
             selectedTab = 'All';
-            
-            // CRITICAL: Reset loading states
+
             isLoading = false;
             isAuthenticating = false;
             isRegistration = false;
-            
+
             nav.style.display = 'none';
             header.style.display = 'none';
             main.style.display = 'none';
             authContent.style.display = 'block';
-            
+
             email.value = '';
             password.value = '';
             error.style.display = 'none';
             authBtn.disabled = false;
             authBtn.innerText = 'Submit';
-            
-            console.log('✅ Logout complete, ready for new login');
         }
 
         // CRUD LOGIC
         async function fetchTodos() {
-            console.log('📥 Fetching todos');
             isLoading = true;
             try {
                 const response = await fetch(apiBase + 'todos', {
                     headers: { 'Authorization': token }
                 });
-                
-                console.log('Fetch response:', response.status);
 
                 if (!response.ok) {
                     throw new Error('Unauthorized');
                 }
-                
+
                 const todosData = await response.json();
-                console.log('Todos:', todosData);
                 todos = todosData;
                 renderTodos();
             } catch(err) {
@@ -296,26 +265,38 @@
         }
 
         async function updateTodo(index) {
-            await fetch(apiBase + 'todos/' + index, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify({ 
-                    task: todos.find(val => val.id === index).task, 
-                    completed: 1 
-                })
-            });
-            fetchTodos();
+            try {
+                const response = await fetch(apiBase + 'todos/' + index, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({ 
+                        task: todos.find(val => val.id === index).task, 
+                        completed: 1 
+                    })
+                });
+                if (!response.ok) throw new Error('Failed to update todo');
+                fetchTodos();
+            } catch (err) {
+                console.error('❌ Update error:', err);
+                alert('Could not update todo. Please try again.');
+            }
         }
 
         async function deleteTodo(index) {
-            await fetch(apiBase + 'todos/' + index, {
-                method: 'DELETE',
-                headers: { 'Authorization': token }
-            });
-            fetchTodos();
+            try {
+                const response = await fetch(apiBase + 'todos/' + index, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': token }
+                });
+                if (!response.ok) throw new Error('Failed to delete todo');
+                fetchTodos();
+            } catch (err) {
+                console.error('❌ Delete error:', err);
+                alert('Could not delete todo. Please try again.');
+            }
         }
 
         async function addTodo() {
@@ -323,16 +304,22 @@
             const task = todoInput.value.trim();
             if (!task) return;
 
-            await fetch(apiBase + 'todos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify({ task })
-            });
-            todoInput.value = '';
-            fetchTodos();
+            try {
+                const response = await fetch(apiBase + 'todos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({ task })
+                });
+                if (!response.ok) throw new Error('Failed to add todo');
+                todoInput.value = '';
+                fetchTodos();
+            } catch (err) {
+                console.error('❌ Add error:', err);
+                alert('Could not add todo. Please try again.');
+            }
         }
 
         // Event Listeners
@@ -340,14 +327,12 @@
         registerBtn.addEventListener('click', toggleIsRegister);
         logoutBtn.addEventListener('click', logout);
 
-        // Tab buttons
         navElements.forEach(btn => {
             btn.addEventListener('click', () => {
                 changeTab(btn.getAttribute('data-tab'));
             });
         });
 
-        // Enter key support
         password.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 authenticate();
@@ -360,26 +345,18 @@
             }
         });
 
-        console.log('✅ Event listeners attached');
-
         // INITIAL LOAD
         if (token) {
-            console.log('🔑 Token found, auto-login...');
             (async function() {
                 try {
-                    await fetchTodos();
-                    showDashboard();
+                    await showDashboard();
                 } catch(err) {
                     console.error('Auto-login failed:', err);
                     localStorage.removeItem('token');
                     token = null;
                 }
             })();
-        } else {
-            console.log('👤 No token, showing login');
         }
-
-        console.log('✅ Script fully loaded');
     </script>
 </body>
 
