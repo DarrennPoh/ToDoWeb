@@ -365,3 +365,6 @@ docker exec -it postgres-db psql -U postgres -d todoapp
 - [Express](https://expressjs.com/) — Fast, minimalist web framework
 - [Docker](https://www.docker.com/) — Containerisation platform
 - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) — VS Code API testing extension
+
+## 📄 License
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

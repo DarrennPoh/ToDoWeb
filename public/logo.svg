@@ -1,0 +1,5 @@
+<svg width="120" height="120" viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TodoWeb logo">
+  <path fill="#E3A857" d="M0 20 Q0 0 20 0 L120 0 Q140 0 140 20 L140 130 L70 150 L0 130 Z"/>
+  <rect x="14" y="14" width="112" height="112" rx="18" fill="#FFFBF6" stroke="#C98A3D" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M45 70 L65 92 L100 48" fill="none" stroke="#6E8C68" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
