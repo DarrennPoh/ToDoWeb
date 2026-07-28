@@ -11,13 +11,13 @@ COPY package*.json .
 RUN npm install 
 
 ### copy the rest of the application code 
-COPY prisma ./prisma/
+COPY . .
 
 ### Generate Prisma Client
 RUN npx prisma generate
 
 ### expose the port that the app runs on 
-EXPOSE 5001 
+EXPOSE 5003
 
 ### define the command that runs the application 
 CMD ["sh", "-c", "npx prisma migrate deploy && node ./src/server.js"]
