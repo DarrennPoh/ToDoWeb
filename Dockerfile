@@ -13,11 +13,8 @@ RUN npm install
 ### copy the rest of the application code 
 COPY . .
 
-### Generate Prisma Client
-RUN npx prisma generate
-
 ### expose the port that the app runs on 
 EXPOSE 5003
 
 ### define the command that runs the application 
-CMD ["sh", "-c", "npx prisma migrate deploy && node ./src/server.js"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node ./src/server.js"]
