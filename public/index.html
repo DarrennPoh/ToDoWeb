@@ -18,7 +18,7 @@
         <div class="brand-row">
             <img class="auth-logo" src="/logo.svg" alt="TodoWeb logo" />
             <span class="brand-wordmark">To Do Web</span>
-    </div>
+        </div>
         <div>
             <h2>Login</h2>
             <p>Create an account!</p>
@@ -319,8 +319,8 @@
                     body: JSON.stringify({ task })
                 });
                 if (!response.ok) throw new Error('Failed to add todo');
-                todoInput.value = '';
-                fetchTodos();
+                await fetchTodos();
+                document.getElementById('todoInput')?.focus();
             } catch (err) {
                 console.error('❌ Add error:', err);
                 alert('Could not add todo. Please try again.');
@@ -347,6 +347,12 @@
         email.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 authenticate();
+            }
+        });
+
+        main.addEventListener('keypress', (e) => {
+            if (e.target.id === 'todoInput' && e.key === 'Enter') {
+                addTodo();
             }
         });
 

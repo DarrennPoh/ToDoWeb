@@ -7,7 +7,11 @@ const router = express.Router()
 router.get('/', async (req, res) => {
     try {
         const todos = await prisma.todo.findMany({
-            where: { userId: req.userId }
+            where: { userId: req.userId },
+            orderBy: [
+                { completed: 'desc' },
+                { id: 'asc' }
+            ]
         })
         res.json(todos)
     } catch (err) {
