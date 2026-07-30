@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5003
 
 ### define the command that runs the application 
-CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node ./src/server.js"]
+CMD ["sh", "-c", "npx prisma db push && npx prisma migrate deploy && node ./src/server.js"]
