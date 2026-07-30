@@ -41,11 +41,14 @@ router.post('/register', async (req, res) => {
         if (err.code === 'P2002') {
             return res.status(409).json({ message: "Username already taken" })
         }
-        console.error(err.message)
-        res.sendStatus(500)
+        // Log the full error to your Render dashboard logs
+        console.error("Register Error:", err)
+        // Return valid JSON so frontend doesn't throw a JSON parse SyntaxError
+        res.status(500).json({ message: "Internal server error. Please try again." })
     }
 })
 
+// Login endpoint /auth/login
 router.post('/login', async (req, res) => {
     const { username, password } = req.body
 
@@ -54,16 +57,18 @@ router.post('/login', async (req, res) => {
             where: { username: username }
         })
 
-        if (!user) { return res.status(404).send({ message: "User not found" }) }
+        if (!user) { return res.status(404).json({ message: "User not found" }) }
 
         const passwordIsValid = bcrypt.compareSync(password, user.password)
-        if (!passwordIsValid) { return res.status(401).send({ message: "Invalid password" }) }
+        if (!passwordIsValid) { return res.status(401).json({ message: "Invalid password" }) }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' })
         res.json({ token })
     } catch (err) {
-        console.error(err.message)
-        res.sendStatus(500)
+        // Log the full error to your Render dashboard logs
+        console.error("Login Error:", err)
+        // Return valid JSON so frontend doesn't throw a JSON parse SyntaxError
+        res.status(500).json({ message: "Internal server error. Please try again." })
     }
 })
 
