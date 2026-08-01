@@ -294,11 +294,12 @@ model User {
 }
 
 model Todo {
-  id        Int     @id @default(autoincrement())
-  task      String
-  completed Boolean @default(false)
-  userId    Int
-  user      User    @relation(fields: [userId], references: [id])
+  id          Int     @id @default(autoincrement())
+  task        String
+  completed   Boolean @default(false)
+  completedAt DateTime?
+  userId      Int
+  user        User    @relation(fields: [userId], references: [id])
 }
 ```
 
