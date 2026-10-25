@@ -370,3 +370,10 @@ docker exec -it postgres-db psql -U postgres -d todoapp
 ## 📄 License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
+## DEMO PICTURES 
+
+- [Signup](screenshots/ToDoWeb_SignUp.png)
+- [Login](screenshots/ToDoWeb_Login.png)
+- [Dashboard 1](screenshots/ToDoWeb_dashboard1.png)
+- [Dashboard 2](screenshots/ToDoWeb_dashboard2.png)
+- [Dashboard 3](screenshots/ToDoWeb_dashboard3.png)
