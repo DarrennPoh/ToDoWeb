@@ -1,8 +1,5 @@
 # 📝 TodoWeb — Full-Stack Todo Application
 
-👉 **Live Demo:** [https://todoweb-gutc.onrender.com]
-> 🚀 **Note:** Hosted on Render Free Tier. If the live app takes ~50 seconds to load on first visit, the server is waking up from sleep!
-
 A modern, containerized todo application built with **Docker, Express, Prisma ORM, and PostgreSQL**.
 Supports user registration, JWT-based login, and full CRUD todo management.
 
