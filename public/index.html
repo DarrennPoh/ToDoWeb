@@ -88,7 +88,7 @@
         }
 
         function updateHeaderText() {
-            const todosLength = todos.length;
+            const todosLength = todos.filter(todo=>!todo.completed).length;
             const newString = todos.length === 1 ?
                 `You have 1 open task.` :
                 `You have ${todosLength} open tasks.`;
