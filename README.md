@@ -1,6 +1,7 @@
 # 📝 TodoWeb — Full-Stack Todo Application
 
 A modern, containerized todo application built with **Docker, Express, Prisma ORM, and PostgreSQL**.
+
 Supports user registration, JWT-based login, and full CRUD todo management.
 
 ---
@@ -19,7 +20,9 @@ Supports user registration, JWT-based login, and full CRUD todo management.
 8. [Database Schema](#️-database-schema)
 9. [Security](#-security)
 10. [Docker Commands Reference](#-docker-commands-reference)
-11. [Author](#-author)
+11. [Technical Challenges & Solutions](#-technical-challenges--solutions)
+12. [What I Learned](#-what-i-learned)
+13. [Author](#-author)
 
 ---
 
@@ -27,7 +30,7 @@ Supports user registration, JWT-based login, and full CRUD todo management.
 
 - ✅ Full CRUD — Create, read, update, and delete todos
 - 🔐 JWT Authentication — Secure register and login
-- 🐳 Docker Containerisation — One-command setup, no manual DB install
+- 🐳 Docker Containerisation — One-command setup, no manual DB installation
 - 🗄️ PostgreSQL + Prisma — Type-safe database with automated migrations
 - 📱 Responsive UI — Clean, mobile-friendly interface
 - 🎨 Tab Filtering — View All, Open, or Completed todos
@@ -66,8 +69,8 @@ Before you start, make sure you have the following installed:
 Open your terminal and run:
 
 ```bash
-git clone https://github.com/DarrennPoh/todoweb.git
-cd todoweb
+git clone https://github.com/DarrennPoh/ToDoWeb.git
+cd ToDoWeb
 ```
 
 ### Step 2 — Set up your environment variables
@@ -92,7 +95,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 Copy the output and paste it as your `JWT_SECRET` value in `.env`.
 
-> ⚠️ Never commit your `.env` file to GitHub. It is already listed in `.gitignore`.
+> ⚠️ Never commit your `.env` file to GitHub. It is listed in `.gitignore`.
 
 ---
 
@@ -103,13 +106,16 @@ Copy the output and paste it as your `JWT_SECRET` value in `.env`.
 **Step 3A — Build and start the containers**
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This will:
+
 - Pull the PostgreSQL 13 image
 - Build the Node.js app image
-- Run database migrations automatically
+- Wait for the database to become healthy
+- Generate the Prisma Client
+- Apply database migrations automatically
 - Start the server on port `5003`
 
 **Step 4A — Open the app**
@@ -119,8 +125,10 @@ Visit [http://localhost:5003](http://localhost:5003) in your browser. You should
 **To stop the app:**
 
 ```bash
-docker-compose down
+docker compose down
 ```
+
+> 💡 This stops and removes the containers but preserves your PostgreSQL data volume. Avoid `docker compose down -v` unless you intentionally want to delete your local database and all its data.
 
 ---
 
@@ -158,14 +166,16 @@ Visit [http://localhost:5003](http://localhost:5003) in your browser.
 A `todoweb.example.rest` file is included so you can test all API endpoints directly inside VS Code — no Postman needed.
 
 ### Step 1 — Install the REST Client extension
-...(unchanged)
+
+Install the [REST Client extension](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VS Code.
 
 ### Step 2 — Copy and open the test file
 
 Copy the example file so you have your own working copy:
-\```bash
+
+```bash
 cp todoweb.example.rest todoweb.rest
-\```
+```
 
 Open `todoweb.rest` in VS Code. You will see each request has a **"Send Request"** button appear above it when you hover.
 
@@ -181,9 +191,9 @@ Run each request from top to bottom by clicking **Send Request**. The response a
 | [2] | Register a new user | ❌ |
 | [3] | Login | ❌ |
 | [4] | Fetch all todos | ✅ |
-| [5] | Create todo — Raspberry Pi sensor | ✅ |
-| [6] | Create todo — MQTT broker | ✅ |
-| [7] | Create todo — Soil moisture alert | ✅ |
+| [5] | Create todo — Complete backend development | ✅ |
+| [6] | Create todo — Prepare for interview | ✅ |
+| [7] | Create todo — Learn Prisma migrations | ✅ |
 | [8] | Update a todo (mark complete) | ✅ |
 | [9] | Delete a todo | ✅ |
 
@@ -191,8 +201,8 @@ Run each request from top to bottom by clicking **Send Request**. The response a
 
 For requests [8] and [9], replace the ID in the URL with a real todo ID from your fetch response [4]:
 
-```
-PUT http://localhost:5003/todos/1   ← change 1 to your actual todo id
+```http
+PUT http://localhost:5003/todos/1
 DELETE http://localhost:5003/todos/1
 ```
 
@@ -200,28 +210,36 @@ DELETE http://localhost:5003/todos/1
 
 ## 📁 Project Structure
 
-```
+```text
 todoweb/
-├── src/                        # Backend source code
-│   ├── server.js               # Express app entry point
+├── src/                         # Backend source code
+│   ├── server.js                # Express app entry point
 │   ├── routes/
-│   │   ├── authRoutes.js       # /auth/register and /auth/login
-│   │   └── todoRoutes.js       # /todos CRUD routes
+│   │   ├── authRoutes.js        # /auth/register and /auth/login
+│   │   └── todoRoutes.js        # /todos CRUD routes
 │   ├── middleware/
-│   │   └── authMiddleware.js   # JWT token verification
-│   └── prismaClient.js         # Shared Prisma instance
+│   │   └── authMiddleware.js    # JWT token verification
+│   └── prismaClient.js          # Shared Prisma instance
+│
 ├── prisma/
-│   ├── schema.prisma           # Database models
-│   └── migrations/             # Auto-generated migration history
-├── public/                     # Frontend files served statically
+│   ├── migrations/
+│   │   └── 0_init/
+│   │       └── migration.sql   # Baseline database migration
+│   └── schema.prisma            # Database models
+│
+├── public/                      # Frontend files served statically
 │   ├── index.html
 │   ├── styles.css
 │   └── fanta.css
-├── todoweb.example.rest               # API test file for VS Code REST Client
-├── .env.example                # Environment variable template
-├── .gitignore                  # Files excluded from Git
-├── Dockerfile                  # Node.js app container config
-├── docker-compose.yaml         # Multi-container orchestration
+│
+├── todoweb.example.rest          # API test file for VS Code REST Client
+├── .env.example                 # Environment variable template
+├── .gitignore                   # Files excluded from Git
+├── Dockerfile                   # Node.js app container config
+├── docker-compose.yaml          # Multi-container orchestration
+├── prisma.config.ts             # Prisma configuration
+├── package.json
+├── package-lock.json
 └── README.md
 ```
 
@@ -237,6 +255,7 @@ todoweb/
 | `POST` | `/auth/login` | Login and receive a JWT token |
 
 **Request body for both:**
+
 ```json
 {
   "username": "your_email@example.com",
@@ -245,9 +264,10 @@ todoweb/
 ```
 
 **Login response:**
+
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "token": "your_jwt_token"
 }
 ```
 
@@ -265,6 +285,7 @@ All todo routes require an `Authorization` header with your JWT token from login
 | `DELETE` | `/todos/:id` | Delete a todo |
 
 **Create todo request body:**
+
 ```json
 {
   "task": "Your task description here"
@@ -272,6 +293,7 @@ All todo routes require an `Authorization` header with your JWT token from login
 ```
 
 **Update todo request body:**
+
 ```json
 {
   "completed": true
@@ -282,32 +304,42 @@ All todo routes require an `Authorization` header with your JWT token from login
 
 ## 🗄️ Database Schema
 
+The application uses Prisma ORM to manage its PostgreSQL database.
+
 ```prisma
 model User {
   id       Int    @id @default(autoincrement())
   username String @unique
-  password String // bcrypt hashed — never stored as plain text
+  password String
   todos    Todo[]
 }
 
 model Todo {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   task        String
-  completed   Boolean @default(false)
+  completed   Boolean   @default(false)
   completedAt DateTime?
   userId      Int
-  user        User    @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
 }
 ```
+
+**Relationship:**
+
+- One user can have multiple todos.
+- Each todo belongs to one user through the `userId` foreign key.
+- Usernames are unique.
+- Todo completion is tracked using the `completed` field and optional `completedAt` timestamp.
 
 ---
 
 ## 🔐 Security
 
-- Passwords are hashed with **bcrypt** before being stored — plain text passwords are never saved
-- **JWT tokens** expire after 24 hours — users must log in again after expiry
-- All todo routes are protected by **auth middleware** — users can only access their own todos
-- Secrets are stored in **environment variables** — never hardcoded in the source code
+- Passwords are hashed with **bcryptjs** before being stored — plain text passwords are never saved.
+- **JWT tokens** are used to authenticate requests to protected todo routes.
+- Todo routes use **authentication middleware** to verify incoming JWT tokens.
+- Secrets are stored in **environment variables** — never hardcoded in the source code.
+- `.env` files and database backups should not be committed to GitHub.
 
 ---
 
@@ -315,22 +347,22 @@ model Todo {
 
 ```bash
 # Start all containers
-docker-compose up
+docker compose up
 
 # Start in background (detached mode)
-docker-compose up -d
+docker compose up -d
 
-# Rebuild images and start (use after code changes)
-docker-compose up --build
+# Rebuild images and start (use after Dockerfile or dependency changes)
+docker compose up --build
 
-# Stop all containers
-docker-compose down
+# Stop all containers (preserves database data)
+docker compose down
 
-# Stop and remove all data (fresh start)
-docker-compose down -v
+# Stop and remove all data (DESTRUCTIVE: deletes database volume)
+docker compose down -v
 
 # View live logs
-docker-compose logs -f
+docker compose logs -f
 
 # Access the PostgreSQL database directly
 docker exec -it postgres-db psql -U postgres -d todoapp
@@ -338,15 +370,72 @@ docker exec -it postgres-db psql -U postgres -d todoapp
 
 ---
 
+## 🔧 Technical Challenges & Solutions
+
+### 1. Prisma P3005 — Non-empty Database
+
+**Problem:**
+
+Prisma returned a P3005 error when attempting to apply migrations to an existing PostgreSQL database.
+
+The database already contained the `User` and `Todo` tables, but did not have a corresponding `_prisma_migrations` table to track migration history.
+
+**Solution:**
+
+- Inspected the existing PostgreSQL tables and compared them against the Prisma schema.
+- Identified that the existing migration was outdated and did not include the `completedAt` field.
+- Generated a baseline migration using `prisma migrate diff`.
+- Used `prisma migrate resolve --applied 0_init` to mark the baseline as already applied.
+- Archived the outdated migration.
+- Verified the migration status using `prisma migrate status`.
+
+This allowed Prisma to recognise the existing database structure without unnecessarily recreating the tables or losing existing data.
+
+### 2. Prisma Client Initialisation Error
+
+**Problem:**
+
+After modifying the Docker startup command, the application returned an error indicating that the Prisma Client had not been initialised.
+
+**Cause:**
+
+The updated startup process no longer explicitly generated the Prisma Client before starting the application.
+
+**Solution:**
+
+Updated the Dockerfile startup command to:
+
+```dockerfile
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node ./src/server.js"]
+```
+
+This ensures that the Prisma Client is generated before the application starts and that pending migrations are applied.
+
+### 3. Database Configuration Across Environments
+
+**Problem:**
+
+The application uses different database connection addresses depending on whether it runs locally or inside Docker.
+
+**Solution:**
+
+Configured the local `.env` file to connect through `localhost`, while Docker Compose overrides the database URL to use the PostgreSQL service hostname `db`.
+
+This is because containers communicate through Docker's internal network rather than using the host machine's `localhost`.
+
+---
+
 ## 💡 What I Learned
 
-- **Docker & Docker Compose** — Multi-container orchestration and containerised deployments
-- **Prisma ORM** — Type-safe database queries and schema-driven migrations
-- **PostgreSQL** — Relational database design with foreign key relationships
-- **JWT Authentication** — Token-based auth flow and middleware implementation
-- **Express Middleware** — Building reusable request processing pipelines
-- **Async JavaScript** — Promises and async/await patterns throughout
-- **MVC Architecture** — Separating routes, middleware, and data access layers
+- **Docker & Docker Compose** — Multi-container orchestration and containerised deployments.
+- **Prisma ORM** — Type-safe database queries and schema-driven migrations.
+- **PostgreSQL** — Relational database design with foreign key relationships.
+- **JWT Authentication** — Token-based authentication flow and middleware implementation.
+- **Express Middleware** — Building reusable request processing pipelines.
+- **Async JavaScript** — Promises and async/await patterns throughout.
+- **MVC Architecture** — Separating routes, middleware, and data access layers.
+- **Database Migrations** — Managing existing databases and keeping schema changes consistent across environments.
+- **Debugging** — Diagnosing Docker startup errors, Prisma migration issues and database configuration problems.
 
 ---
 
@@ -367,14 +456,18 @@ docker exec -it postgres-db psql -U postgres -d todoapp
 - [Docker](https://www.docker.com/) — Containerisation platform
 - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) — VS Code API testing extension
 
+---
+
 ## 📄 License
+
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
-## DEMO PICTURES 
+---
+
+## 📸 DEMO PICTURES
 
 - [Signup](screenshots/ToDoWeb_SignUp.png)
 - [Login](screenshots/ToDoWeb_Login.png)
 - [Dashboard 1](screenshots/ToDoWeb_dashboard1.png)
 - [Dashboard 2](screenshots/ToDoWeb_dashboard2.png)
 - [Dashboard 3](screenshots/ToDoWeb_dashboard3.png)
-
