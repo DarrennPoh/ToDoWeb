@@ -1,8 +1,23 @@
-node_modules
-# Keep environment variables out of version control
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
 
-/src/generated/prisma
+# Database backups
+todoapp-backup.sql
+backups/
+*.dump
+*.backup
 
-
+# Personal API testing files
 todoweb.rest
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
